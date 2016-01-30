@@ -37,7 +37,14 @@ public class BoardManager : MonoBehaviour
     }
     public GameObject getRandomTile()
     {
-        return getTileAtID(getRandom());
+        bool open = false;
+        while (open == false)
+        {
+            int i = getRandom();
+            if (getTileAtID(i).GetComponent<Tile>().State != Tile.TileStates.Closed)
+                return getTileAtID(i);
+        }
+        return null;
     }
 
     public void Setup(int x, int y, GameObject[] list)

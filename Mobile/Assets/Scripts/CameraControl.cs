@@ -111,7 +111,7 @@ public class CameraControl : MonoBehaviour {
                 if (mode == SelectedMode.None)
                 {
                     Debug.Log(t.ID);
-                    if (game.getCurrentPlayer().tileID == t.ID)
+                    if (game.getCurrentPlayer().tileID == t.ID && game.getCurrentPlayer().MoveLeft != 0)
                     {
                         board.selectTiles(hit.collider.GetComponent<Tile>().ID, game.getCurrentPlayer().MoveLeft);
                         mode = SelectedMode.Move;
