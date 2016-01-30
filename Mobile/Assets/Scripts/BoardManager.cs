@@ -126,6 +126,30 @@ public class BoardManager : MonoBehaviour
         selectTiles(getTileAtPos(p).GetComponent<Tile>().ID, stage);
     }
 
+    public List<int> selectTilesAround(int id, int range)
+    {
+        List<int> tiles = new List<int>();
+        List<int> tmp = new List<int>();
+        tiles.Add(getTileAtID(id).GetComponent<Tile>().ID);
+        for (int i= 0; i < range; i++)
+        {
+            for (int j = 0; j < tiles.Count; j++)
+            {
+                List<int> t = tilesAround(tiles[i]);
+
+                for (int k = 0; k < t.Count; k++)
+                {
+                    if (!tiles.Contains(t[k]))
+                        tmp.Add(t[k]);
+                }
+            }
+
+            tiles.AddRange(tmp);
+        }
+        Debug.Log(tiles.Count);
+        return tiles;
+    }
+
     public int selectStageFrom(int idTo, int idFrom)
     {
         int total = 0;

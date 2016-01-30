@@ -78,7 +78,8 @@ public class CameraControl : MonoBehaviour {
 
 	// Update is called once per frame
 	void FixedUpdate () {
-	    if (Input.GetKey(KeyCode.A))
+	    /*
+        if (Input.GetKey(KeyCode.A))
         {
             Move(-1, 0, 0);
         }
@@ -178,41 +179,81 @@ public class CameraControl : MonoBehaviour {
         {
             Debug.Log(board.selectStageFrom(40, 35));
         }
-
+        */
         if (Control)
         {
-            if (Input.touchCount > 0)
+            if (eSystem.currentSelectedGameObject != null)
             {
-                if (Input.touchCount == 1)
+                Debug.Log("Touching UI");
+            }
+            else
+            {
+                if (Input.touchCount > 0)
                 {
-                    if (Input.GetTouch(0).phase == TouchPhase.Moved)
+                    if (Input.touchCount == 1)
                     {
-                        Touch t = Input.GetTouch(0);
-                        Vector3 p = Input.GetTouch(0).deltaPosition.normalized * 3;
-                        Move(-p.x, -p.y, 0);
-                    }
-                    if (Input.GetTouch(0).phase == TouchPhase.Began)
-                    {
-                        Ray r = cam.ScreenPointToRay(Input.GetTouch(0).position);
-                        RaycastHit2D tHit = Physics2D.Raycast(r.origin, r.direction);
-                        if (tHit.collider.tag == "Tile")
+                        if (Input.GetTouch(0).phase == TouchPhase.Moved)
                         {
-                            //center camera on tile
-                            CenterCamera(tHit.collider.GetComponent<Tile>().ID);
-                            Debug.Log("Hit Tile: " + tHit.collider.GetComponent<Tile>().ID);
+                            Touch t = Input.GetTouch(0);
+                            Vector3 p = Input.GetTouch(0).deltaPosition.normalized * 1.5f;
+                            Move(-p.x, -p.y, 0);
+                        }
+                        if (Input.GetTouch(0).phase == TouchPhase.Began)
+                        {
+                            Ray r = cam.ScreenPointToRay(Input.GetTouch(0).position);
+                            RaycastHit2D hit = Physics2D.Raycast(r.origin, r.direction);
+                            Tile t = hit.collider.GetComponent<Tile>();
+                            if (mode == SelectedMode.None)
+                            {
+                                Debug.Log(t.ID);
+                                if (game.getCurrentPlayer().tileID == t.ID && game.getCurrentPlayer().MoveLeft != 0)
+                                {
+                                    board.selectTiles(hit.collider.GetComponent<Tile>().ID, game.getCurrentPlayer().MoveLeft);
+                                    mode = SelectedMode.Move;
+                                }
+                                selectedTile = hit.collider.GetComponent<Tile>().ID;
+                            }
+                            else if (mode == SelectedMode.Move)
+                            {
+                                if (t.Selected())
+                                {
+                                    board.buildAccept(t.ID);
+                                    mode = SelectedMode.AcceptMove;
+                                    selectedTile = t.ID;
+                                }
+                            }
+                            else if (mode == SelectedMode.AcceptMove)
+                            {
+                                if (t.uiState == Tile.TileUIState.Accept)
+                                {
+                                    game.MovePlayer(board.getTileAtID(selectedTile).GetComponent<Tile>());
+                                    board.DeselectTiles(true, true);
+                                    mode = SelectedMode.None;
+                                }
+                                else if (t.uiState == Tile.TileUIState.Cancel)
+                                {
+                                    Debug.Log("Cancel Hit");
+                                    board.DeselectTiles(false, true);
+                                }
+                                else if (t.Selected())
+                                {
+                                    board.DeselectTiles(false, true);
+                                    board.buildAccept(t.ID);
+                                }
+                            }
                         }
                     }
-                }
-                else if (Input.touchCount == 2)
-                {
-                    Vector2 t1 = Input.GetTouch(0).position - Input.GetTouch(0).deltaPosition;
-                    Vector2 t2 = Input.GetTouch(1).position - Input.GetTouch(1).deltaPosition;
+                    else if (Input.touchCount == 2)
+                    {
+                        Vector2 t1 = Input.GetTouch(0).position - Input.GetTouch(0).deltaPosition;
+                        Vector2 t2 = Input.GetTouch(1).position - Input.GetTouch(1).deltaPosition;
 
-                    float prevTouch = (t1 - t2).magnitude ;
-                    float touch = (Input.GetTouch(0).position - Input.GetTouch(1).position).magnitude;
-                    float deltaDiff = prevTouch - touch;
+                        float prevTouch = (t1 - t2).magnitude;
+                        float touch = (Input.GetTouch(0).position - Input.GetTouch(1).position).magnitude;
+                        float deltaDiff = prevTouch - touch;
 
-                    Zoom(deltaDiff);
+                        Zoom(deltaDiff * 0.3f);
+                    }
                 }
             }
         }

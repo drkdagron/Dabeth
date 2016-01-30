@@ -21,9 +21,14 @@ public class Player : MonoBehaviour {
 
     public void PlacePlayer(GameObject tile, int moves)
     {
-        this.transform.position = tile.transform.position;
+        GameObject prev = game.Board.getTileAtID(tileID);
+        Vector3 edge = tile.transform.position - prev.transform.position;
+        float f = Mathf.Atan2(edge.y, edge.x);
+
+        this.transform.position = tile.transform.position + new Vector3(0,0,-0.5f);
         tileID = tile.GetComponent<Tile>().ID;
         MoveLeft -= moves;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, Mathf.Rad2Deg * f));
     }
 
 	// Use this for initialization

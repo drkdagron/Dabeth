@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class BoardCreator : MonoBehaviour {
 
@@ -10,6 +11,16 @@ public class BoardCreator : MonoBehaviour {
     public Transform parent;
     public GameManager game;
 
+    public BoardManager board;
+
+    public Sprite[] TileArt;
+    public enum Tiles
+    {
+        grass,
+        wall,
+        water
+    };
+
 	// Use this for initialization
 
     public void BuildBoard()
@@ -18,6 +29,7 @@ public class BoardCreator : MonoBehaviour {
     }
 	void Start () {
 
+        //grass and wall tile creation
         int count = 0;
 	    for (int i= 0; i < YTiles; i++)
         {
@@ -32,7 +44,7 @@ public class BoardCreator : MonoBehaviour {
                 if (i == 0 || j == 0 || i == YTiles - 1 || j == XTiles - 1)
                 {
                     obj.GetComponent<Tile>().State = global::Tile.TileStates.Closed;
-                    obj.GetComponent<SpriteRenderer>().enabled = false;
+                    obj.GetComponent<SpriteRenderer>().sprite = TileArt[(int)Tiles.wall];
                 }
                 else
                 {
@@ -48,7 +60,22 @@ public class BoardCreator : MonoBehaviour {
         cc.YMax = (YTiles - 1) * 1.03f + 6;
 
         GetComponent<BoardManager>().Setup(XTiles, YTiles, GameObject.FindGameObjectsWithTag("Tile"));
-
+        
+        //spawn ponds
+        int water = Random.Range(0, 3);
+        Debug.Log("Number of Ponds: " + water);
+        int size = Random.Range(1, 6);
+        Debug.Log("Size of Ponds: " + size);
+        for (int i = 0; i < water; i++)
+        {
+            GameObject t = GetComponent<BoardManager>().getRandomTile();
+            List<int> tile = GetComponent<BoardManager>().selectTilesAround(t.GetComponent<Tile>().ID, size);
+            for (int j = 0; j < tile.Count; j++)
+            {
+                board.getTileAtID(tile[i]).GetComponent<SpriteRenderer>().sprite = TileArt[(int)Tiles.water];
+                board.getTileAtID(tile[i]).GetComponent<Tile>().State = global::Tile.TileStates.Closed;
+            }
+        }
         game.PlayerSetup();
         Destroy(this);
 	}
