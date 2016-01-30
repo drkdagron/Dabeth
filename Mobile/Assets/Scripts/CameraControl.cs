@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 
 public class CameraControl : MonoBehaviour {
+
+    public EventSystem eSystem;
 
     public enum SelectedMode
     {
@@ -103,47 +106,54 @@ public class CameraControl : MonoBehaviour {
 
         if (Input.GetMouseButtonDown(0))
         {
-            Ray r = cam.ScreenPointToRay(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(r.origin, r.direction);
-            if (hit.collider.tag == "Tile")
+            if (eSystem.currentSelectedGameObject != null)
             {
-                Tile t = hit.collider.GetComponent<Tile>();
-                if (mode == SelectedMode.None)
+                Debug.Log("UI Hit");
+            }
+            else
+            {
+                Ray r = cam.ScreenPointToRay(Input.mousePosition);
+                RaycastHit2D hit = Physics2D.Raycast(r.origin, r.direction);
+                if (hit.collider.tag == "Tile")
                 {
-                    Debug.Log(t.ID);
-                    if (game.getCurrentPlayer().tileID == t.ID && game.getCurrentPlayer().MoveLeft != 0)
+                    Tile t = hit.collider.GetComponent<Tile>();
+                    if (mode == SelectedMode.None)
                     {
-                        board.selectTiles(hit.collider.GetComponent<Tile>().ID, game.getCurrentPlayer().MoveLeft);
-                        mode = SelectedMode.Move;
+                        Debug.Log(t.ID);
+                        if (game.getCurrentPlayer().tileID == t.ID && game.getCurrentPlayer().MoveLeft != 0)
+                        {
+                            board.selectTiles(hit.collider.GetComponent<Tile>().ID, game.getCurrentPlayer().MoveLeft);
+                            mode = SelectedMode.Move;
+                        }
+                        selectedTile = hit.collider.GetComponent<Tile>().ID;
                     }
-                    selectedTile = hit.collider.GetComponent<Tile>().ID;
-                }
-                else if (mode == SelectedMode.Move)
-                {
-                    if (t.Selected())
+                    else if (mode == SelectedMode.Move)
                     {
-                        board.buildAccept(t.ID);
-                        mode = SelectedMode.AcceptMove;
-                        selectedTile = t.ID;
+                        if (t.Selected())
+                        {
+                            board.buildAccept(t.ID);
+                            mode = SelectedMode.AcceptMove;
+                            selectedTile = t.ID;
+                        }
                     }
-                }
-                else if (mode == SelectedMode.AcceptMove)
-                {
-                    if (t.uiState == Tile.TileUIState.Accept)
+                    else if (mode == SelectedMode.AcceptMove)
                     {
-                        game.MovePlayer(board.getTileAtID(selectedTile).GetComponent<Tile>());
-                        board.DeselectTiles(true, true);
-                        mode = SelectedMode.None;
-                    }
-                    else if (t.uiState == Tile.TileUIState.Cancel)
-                    {
-                        Debug.Log("Cancel Hit");
-                        board.DeselectTiles(false, true);
-                    }
-                    else if (t.Selected())
-                    {
-                        board.DeselectTiles(false, true);
-                        board.buildAccept(t.ID);
+                        if (t.uiState == Tile.TileUIState.Accept)
+                        {
+                            game.MovePlayer(board.getTileAtID(selectedTile).GetComponent<Tile>());
+                            board.DeselectTiles(true, true);
+                            mode = SelectedMode.None;
+                        }
+                        else if (t.uiState == Tile.TileUIState.Cancel)
+                        {
+                            Debug.Log("Cancel Hit");
+                            board.DeselectTiles(false, true);
+                        }
+                        else if (t.Selected())
+                        {
+                            board.DeselectTiles(false, true);
+                            board.buildAccept(t.ID);
+                        }
                     }
                 }
             }

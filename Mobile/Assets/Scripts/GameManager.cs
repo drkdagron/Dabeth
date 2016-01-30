@@ -8,6 +8,11 @@ public class GameManager : MonoBehaviour {
 
     public GameObject Tile;
 
+    public void NextTurn()
+    {
+        Player.ResetTurn();
+    }
+
     public Player getCurrentPlayer()
     {
         return Player;
