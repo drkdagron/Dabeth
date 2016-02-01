@@ -18,10 +18,13 @@ public class CameraControl : MonoBehaviour {
     public float moveSpeed;
     public float zoomRate;
 
+    [HideInInspector]
     public Transform camTran;
+    [HideInInspector]
     public Camera cam;
+    [HideInInspector]
     public BoardManager board;
-
+    [HideInInspector]
     public GameManager game;
 
     public float XMin = 0;
@@ -41,8 +44,8 @@ public class CameraControl : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        camTran = GetComponent<Transform>();
-        cam = GetComponent<Camera>();
+        //camTran = GetComponent<Transform>();
+        //cam = GetComponent<Camera>();
         Move(0, 0, 0);
 
         mode = SelectedMode.None;
@@ -195,7 +198,7 @@ public class CameraControl : MonoBehaviour {
                         if (Input.GetTouch(0).phase == TouchPhase.Moved)
                         {
                             Touch t = Input.GetTouch(0);
-                            Vector3 p = Input.GetTouch(0).deltaPosition.normalized * 1.5f;
+                            Vector3 p = Input.GetTouch(0).deltaPosition * 0.5f;
                             Move(-p.x, -p.y, 0);
                         }
                         if (Input.GetTouch(0).phase == TouchPhase.Began)
@@ -208,7 +211,7 @@ public class CameraControl : MonoBehaviour {
                                 Debug.Log(t.ID);
                                 if (game.getCurrentPlayer().tileID == t.ID && game.getCurrentPlayer().MoveLeft != 0)
                                 {
-                                    board.selectTiles(hit.collider.GetComponent<Tile>().ID, game.getCurrentPlayer().MoveLeft);
+                                    //board.selectTiles(hit.collider.GetComponent<Tile>().ID, game.getCurrentPlayer().MoveLeft);
                                     mode = SelectedMode.Move;
                                 }
                                 selectedTile = hit.collider.GetComponent<Tile>().ID;

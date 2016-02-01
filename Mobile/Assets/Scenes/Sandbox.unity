@@ -151,7 +151,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Inventory
+  m_Text: Attack
 --- !u!222 &22031133
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -258,9 +258,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5da4fd7f88c8534eb1714c5819d1b37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  boardParent: {fileID: 1051070079}
   Board: {fileID: 1051070080}
-  Player: {fileID: 1502707310}
-  Tile: {fileID: 146656, guid: e5a60d949138a14449f4c29a5aaa0251, type: 2}
+  player: {fileID: 0}
+  AI: []
+  BoardWidth: 8
+  BoardHeight: 8
+  currentTurn: 0
+  playerFirst: 0
 --- !u!4 &187646321
 Transform:
   m_ObjectHideFlags: 0
@@ -326,7 +331,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 4aeac1e860b90c24687178c3838d0c55, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 101347849fb059f4f9da8c95ca58bc46, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -467,7 +472,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
 --- !u!1 &787409734
 GameObject:
   m_ObjectHideFlags: 0
@@ -691,8 +696,8 @@ MonoBehaviour:
   mode: 1
   moveSpeed: 0.2
   zoomRate: 0.2
-  camTran: {fileID: 0}
-  cam: {fileID: 0}
+  camTran: {fileID: 867950498}
+  cam: {fileID: 867950497}
   board: {fileID: 1051070080}
   game: {fileID: 187646320}
   XMin: 0
@@ -736,8 +741,8 @@ RectTransform:
   m_RootOrder: 3
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 20, y: 20}
-  m_SizeDelta: {x: 80, y: 220}
+  m_AnchoredPosition: {x: 25, y: 25}
+  m_SizeDelta: {x: 70, y: 210}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &876149932
 MonoBehaviour:
@@ -860,7 +865,7 @@ RectTransform:
   - {fileID: 1662392477}
   - {fileID: 876149931}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -932,7 +937,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Player
+  m_Text: Move
 --- !u!222 &997773261
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1057,16 +1062,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e1f9e4cdbca367449ecd45cd026d198, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  XTiles: 26
-  YTiles: 20
-  Tile: {fileID: 146656, guid: e5a60d949138a14449f4c29a5aaa0251, type: 2}
-  parent: {fileID: 1051070082}
-  game: {fileID: 187646320}
-  board: {fileID: 1051070080}
   TileArt:
   - {fileID: 21300000, guid: 0642653b65c718e4e874701e41d7573d, type: 3}
   - {fileID: 21300000, guid: 8f17a5e9945c149468da0261f61db2b5, type: 3}
-  - {fileID: 21300000, guid: 9b453879e8c9ccc4fbda1173ad69d025, type: 3}
+  - {fileID: 0}
 --- !u!4 &1051070082
 Transform:
   m_ObjectHideFlags: 0
@@ -1113,7 +1112,7 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 10, y: 10}
+  m_AnchoredPosition: {x: 5, y: 5}
   m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1166490096
@@ -1202,7 +1201,7 @@ GameObject:
   - 114: {fileID: 1190447565}
   - 114: {fileID: 1190447564}
   m_Layer: 5
-  m_Name: Inventory
+  m_Name: Attack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1224,7 +1223,7 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 10, y: 80}
+  m_AnchoredPosition: {x: 5, y: 75}
   m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1190447564
@@ -1354,7 +1353,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 8f30fb24cfa1d9549a972954a4aa6cb3, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 90b057b11d265ec45b17f340cdc4e809, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1368,12 +1367,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1351076377}
---- !u!114 &1502707310 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 11421140, guid: 39e10cab96bc55f40a1b49b715c09327,
-    type: 2}
-  m_PrefabInternal: {fileID: 1897511071}
-  m_Script: {fileID: 11500000, guid: ac4aa1cc82c688741a771f44771de063, type: 3}
 --- !u!1 &1662392476
 GameObject:
   m_ObjectHideFlags: 0
@@ -1441,52 +1434,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1662392476}
---- !u!1001 &1897511071
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 411484, guid: 39e10cab96bc55f40a1b49b715c09327, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 411484, guid: 39e10cab96bc55f40a1b49b715c09327, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 411484, guid: 39e10cab96bc55f40a1b49b715c09327, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 411484, guid: 39e10cab96bc55f40a1b49b715c09327, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 411484, guid: 39e10cab96bc55f40a1b49b715c09327, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 411484, guid: 39e10cab96bc55f40a1b49b715c09327, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 411484, guid: 39e10cab96bc55f40a1b49b715c09327, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 411484, guid: 39e10cab96bc55f40a1b49b715c09327, type: 2}
-      propertyPath: m_RootOrder
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 11421140, guid: 39e10cab96bc55f40a1b49b715c09327, type: 2}
-      propertyPath: game
-      value: 
-      objectReference: {fileID: 187646320}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 39e10cab96bc55f40a1b49b715c09327, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1 &2044643781
 GameObject:
   m_ObjectHideFlags: 0
@@ -1566,7 +1513,7 @@ GameObject:
   - 114: {fileID: 2104516817}
   - 114: {fileID: 2104516816}
   m_Layer: 5
-  m_Name: PlayerInfo
+  m_Name: Move
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1588,7 +1535,7 @@ RectTransform:
   m_RootOrder: 2
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 10, y: 150}
+  m_AnchoredPosition: {x: 5, y: 145}
   m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &2104516816
@@ -1629,7 +1576,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2104516817}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 187646320}
+        m_MethodName: ShowPlayerMovement
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &2104516817

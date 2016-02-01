@@ -31,10 +31,13 @@ public class Player : MonoBehaviour {
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, Mathf.Rad2Deg * f));
     }
 
-	// Use this for initialization
-	void Start () {
-        MoveLeft = Move;
-	}
+    public void Init(GameManager game, GameObject tile)
+    {
+        this.game = game;
+        this.transform.position = tile.transform.position + new Vector3(0, 0, -0.5f);
+        this.tileID = tile.GetComponent<Tile>().ID;
+        transform.rotation = Quaternion.Euler(0, 0, 90);
+    }
 	
 	// Update is called once per frame
 	void Update () {

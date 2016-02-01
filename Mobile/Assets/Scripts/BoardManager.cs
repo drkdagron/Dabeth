@@ -102,55 +102,48 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    public void selectTiles(int id, int stage) //id is the id of the tile of which you want to select, stage is the number of tiles around you want selected;
+    public void selectMoveTiles(int id, int stage) //id is the id of the tile of which you want to select, stage is the number of tiles around you want selected;
     {
-        Debug.Log("SelectTiles Called");
-        for (int i = 0; i < Tiles.Length; i++)
+        List<int> tiles = selectTilesAround(id, stage);
+        for (int i = 0; i < tiles.Count; i++)
         {
-            if (id != i)
-            {
-                if (Tiles[i].GetComponent<Tile>().State == Tile.TileStates.Open)
-                {
-                    Debug.Log("Tile Open");
-                    if (Vector2.Distance(getTileAtID(id).transform.position, getTileAtID(i).transform.position) < stage * 1.25f)
-                    {
-                        Debug.Log("Tile Close Enough");
-                        Tiles[i].transform.FindChild("Selected").gameObject.SetActive(true);
-                    }
-                }
-            }
+            Tile t = getTileAtID(tiles[i]).GetComponent<Tile>();
+            if (t.State == Tile.TileStates.Open)
+                getTileAtID(tiles[i]).transform.FindChild("Selected").gameObject.SetActive(true);
         }
     }
     public void selectTiles(Vector2 p, int stage)
     {
-        selectTiles(getTileAtPos(p).GetComponent<Tile>().ID, stage);
+        //selectTiles(getTileAtPos(p).GetComponent<Tile>().ID, stage);
     }
 
     public List<int> selectTilesAround(int id, int range)
     {
-        List<int> tiles = new List<int>();
-        List<int> tmp = new List<int>();
+        List<int> tiles = new List<int>();      
+        List<int> tRange = new List<int>();
         tiles.Add(getTileAtID(id).GetComponent<Tile>().ID);
         for (int i= 0; i < range; i++)
         {
             for (int j = 0; j < tiles.Count; j++)
             {
-                List<int> t = tilesAround(tiles[i]);
+                List<int> tmp = tilesAround(tiles[j]);
 
-                for (int k = 0; k < t.Count; k++)
+                for (int k = tmp.Count - 1; k > -1; k--)
                 {
-                    if (!tiles.Contains(t[k]))
-                        tmp.Add(t[k]);
+                    if (tiles.Contains(tmp[k]))
+                        tmp.RemoveAt(k);
                 }
+
+                tRange.AddRange(tmp);
             }
 
-            tiles.AddRange(tmp);
+            tiles.AddRange(tRange);
         }
         Debug.Log(tiles.Count);
         return tiles;
     }
 
-    public int selectStageFrom(int idTo, int idFrom)
+    public int TilePosDistanceBetween(int idTo, int idFrom)
     {
         int total = 0;
         int newStage = 1;
