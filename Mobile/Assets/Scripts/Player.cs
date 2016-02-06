@@ -13,6 +13,8 @@ public class Player : MonoBehaviour {
     public int MoveLeft;
     public int Move;
 
+    public Weapon Weapon { get; set; }
+
     public void ResetTurn()
     {
         Move = 3;

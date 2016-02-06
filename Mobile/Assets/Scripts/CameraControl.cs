@@ -206,6 +206,7 @@ public class CameraControl : MonoBehaviour {
                             Ray r = cam.ScreenPointToRay(Input.GetTouch(0).position);
                             RaycastHit2D hit = Physics2D.Raycast(r.origin, r.direction);
                             Tile t = hit.collider.GetComponent<Tile>();
+                            /*
                             if (mode == SelectedMode.None)
                             {
                                 Debug.Log(t.ID);
@@ -216,7 +217,8 @@ public class CameraControl : MonoBehaviour {
                                 }
                                 selectedTile = hit.collider.GetComponent<Tile>().ID;
                             }
-                            else if (mode == SelectedMode.Move)
+                            */
+                            if (mode == SelectedMode.Move)
                             {
                                 if (t.Selected())
                                 {

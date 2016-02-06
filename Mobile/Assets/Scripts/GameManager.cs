@@ -3,6 +3,7 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour {
 
+    public CameraControl control;
     public GameObject boardParent;
     public BoardManager Board;
     public Player player;
@@ -46,6 +47,7 @@ public class GameManager : MonoBehaviour {
     {
         Player p = getCurrentPlayer();
         Board.selectMoveTiles(p.tileID, p.MoveLeft);
+        control.mode = CameraControl.SelectedMode.Move;
     }
 
     public void MovePlayer(Tile moveTo)
@@ -54,6 +56,12 @@ public class GameManager : MonoBehaviour {
         float d = Board.TilePosDistanceBetween(moveTo.ID, curr.ID);
         Debug.Log(d);
         player.PlacePlayer(moveTo.gameObject, (int)d);
+    }
+
+    public void ShowAttackDistance()
+    {
+        Weapon p = getCurrentPlayer().Weapon;
+        
     }
 
     public void AttackPlayer(Player pAtk, Player pDef)
