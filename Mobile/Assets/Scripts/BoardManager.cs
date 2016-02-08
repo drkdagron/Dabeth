@@ -108,8 +108,11 @@ public class BoardManager : MonoBehaviour
         for (int i = 0; i < tiles.Count; i++)
         {
             Tile t = getTileAtID(tiles[i]).GetComponent<Tile>();
-            if (t.State == Tile.TileStates.Open)
-                getTileAtID(tiles[i]).transform.FindChild("Selected").gameObject.SetActive(true);
+            if (id != t.ID)
+            {
+                if (t.State == Tile.TileStates.Open)
+                    getTileAtID(tiles[i]).transform.FindChild("Selected").gameObject.SetActive(true);
+            }
         }
     }
     public void selectTiles(Vector2 p, int stage)
@@ -139,6 +142,7 @@ public class BoardManager : MonoBehaviour
 
             tiles.AddRange(tRange);
         }
+        tiles.Remove(0);
         Debug.Log(tiles.Count);
         return tiles;
     }

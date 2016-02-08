@@ -3,6 +3,7 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour {
 
+    public CameraControl cam;
     public GameObject boardParent;
     public BoardManager Board;
     public Player player;
@@ -13,6 +14,8 @@ public class GameManager : MonoBehaviour {
 
     public int currentTurn;     //this will keep track of which turn it is...
     public bool playerFirst;    //this will determine with currentTurn whos turn it is... if true  player = currentTurn %= 0 else player = currentTurn %= 1
+
+    public UIPlayer currentUIPlayer;
 
     public Player getCurrentPlayer()
     {
@@ -40,12 +43,24 @@ public class GameManager : MonoBehaviour {
 
         //Start Turn
         player.ResetTurn();
+        currentUIPlayer.setUI(player);
     }
 
     public void ShowPlayerMovement()
     {
-        Player p = getCurrentPlayer();
-        Board.selectMoveTiles(p.tileID, p.MoveLeft);
+        if (cam.mode == CameraControl.SelectedMode.None)
+        {
+            Player p = getCurrentPlayer();
+            Board.selectMoveTiles(p.tileID, p.MoveLeft);
+            cam.mode = CameraControl.SelectedMode.Move;
+            cam.CenterCamera(p.tileID);
+            currentUIPlayer.setMoveBar(p);
+        }
+        else
+        {
+            cam.mode = CameraControl.SelectedMode.None;
+            Board.DeselectTiles(true, true);
+        }
     }
 
     public void MovePlayer(Tile moveTo)
@@ -54,6 +69,12 @@ public class GameManager : MonoBehaviour {
         float d = Board.TilePosDistanceBetween(moveTo.ID, curr.ID);
         Debug.Log(d);
         player.PlacePlayer(moveTo.gameObject, (int)d);
+        currentUIPlayer.setMoveBar(getCurrentPlayer());
+    }
+
+    public void ShowPlayerAttack(Player p)
+    {
+        
     }
 
     public void AttackPlayer(Player pAtk, Player pDef)

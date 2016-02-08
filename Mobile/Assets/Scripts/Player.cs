@@ -5,6 +5,9 @@ public class Player : MonoBehaviour {
 
     public GameManager game;
 
+    public string Name;
+
+    public int HealthTotal;
     public int Health;
     public int Armor;
 
@@ -13,10 +16,14 @@ public class Player : MonoBehaviour {
     public int MoveLeft;
     public int Move;
 
+    public Weapon Weapon { get; set; }
+
     public void ResetTurn()
     {
         Move = 3;
         MoveLeft = Move;
+        HealthTotal = 100;
+        Health = HealthTotal;
     }
 
     public void PlacePlayer(GameObject tile, int moves)
@@ -38,9 +45,4 @@ public class Player : MonoBehaviour {
         this.tileID = tile.GetComponent<Tile>().ID;
         transform.rotation = Quaternion.Euler(0, 0, 90);
     }
-	
-	// Update is called once per frame
-	void Update () {
-	    
-	}
 }

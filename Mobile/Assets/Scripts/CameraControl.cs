@@ -81,33 +81,7 @@ public class CameraControl : MonoBehaviour {
 
 	// Update is called once per frame
 	void FixedUpdate () {
-	    /*
-        if (Input.GetKey(KeyCode.A))
-        {
-            Move(-1, 0, 0);
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            Move(1, 0, 0);
-        }
-        if (Input.GetKey(KeyCode.W))
-        {
-            Move(0, 1, 0);
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            Move(0, -1, 0);
-        }
         
-        if (Input.GetKey(KeyCode.Q))
-        {
-            Zoom(1);
-        }
-        if (Input.GetKey(KeyCode.E))
-        {
-            Zoom(-1);
-        }
-
         if (Input.GetMouseButtonDown(0))
         {
             if (eSystem.currentSelectedGameObject != null)
@@ -126,7 +100,7 @@ public class CameraControl : MonoBehaviour {
                         Debug.Log(t.ID);
                         if (game.getCurrentPlayer().tileID == t.ID && game.getCurrentPlayer().MoveLeft != 0)
                         {
-                            board.selectTiles(hit.collider.GetComponent<Tile>().ID, game.getCurrentPlayer().MoveLeft);
+                            board.selectMoveTiles(game.getCurrentPlayer().tileID, game.getCurrentPlayer().MoveLeft);
                             mode = SelectedMode.Move;
                         }
                         selectedTile = hit.collider.GetComponent<Tile>().ID;
@@ -176,13 +150,8 @@ public class CameraControl : MonoBehaviour {
         {
             Zoom(-Input.GetAxis("Mouse Y"));
         }
+        
 
-        //stage tests
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            Debug.Log(board.selectStageFrom(40, 35));
-        }
-        */
         if (Control)
         {
             if (eSystem.currentSelectedGameObject != null)
@@ -206,17 +175,7 @@ public class CameraControl : MonoBehaviour {
                             Ray r = cam.ScreenPointToRay(Input.GetTouch(0).position);
                             RaycastHit2D hit = Physics2D.Raycast(r.origin, r.direction);
                             Tile t = hit.collider.GetComponent<Tile>();
-                            if (mode == SelectedMode.None)
-                            {
-                                Debug.Log(t.ID);
-                                if (game.getCurrentPlayer().tileID == t.ID && game.getCurrentPlayer().MoveLeft != 0)
-                                {
-                                    //board.selectTiles(hit.collider.GetComponent<Tile>().ID, game.getCurrentPlayer().MoveLeft);
-                                    mode = SelectedMode.Move;
-                                }
-                                selectedTile = hit.collider.GetComponent<Tile>().ID;
-                            }
-                            else if (mode == SelectedMode.Move)
+                            if (mode == SelectedMode.Move)
                             {
                                 if (t.Selected())
                                 {

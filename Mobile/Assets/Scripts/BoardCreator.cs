@@ -9,7 +9,10 @@ public class BoardCreator : MonoBehaviour {
     {
         grass,
         wall,
-        water
+        water,
+        sand,
+        forest,
+        stone
     };
 
 	// Use this for initialization
@@ -18,6 +21,20 @@ public class BoardCreator : MonoBehaviour {
 
         List<GameObject> tiles = new List<GameObject>();
         GameObject tileObj = Resources.Load("Assets/Prefabs/Tile") as GameObject;
+
+        float xOrg = Random.Range(0, 2500000);
+        float yOrg = Random.Range(0, 2500000);
+        float[,] perlin = new float[width, height];
+        for (int i= 0; i < perlin.GetLength(0); i++)
+        {
+            for (int j= 0; j < perlin.GetLength(1); j++)
+            {
+                float xCor = xOrg + (float)i / width * 10f;
+                float yCor = yOrg + (float)j / height * 10f;
+                perlin[i, j] = Mathf.PerlinNoise(xCor, yCor);
+            }
+        }
+
         //grass and wall tile creation
         int count = 0;
         for (int i = 0; i < height; i++)
@@ -32,8 +49,28 @@ public class BoardCreator : MonoBehaviour {
 
                 if (i == 0 || j == 0 || i == height - 1 || j == width - 1)
                 {
-                    obj.GetComponent<Tile>().State = global::Tile.TileStates.Closed;
+                    obj.GetComponent<Tile>().State = Tile.TileStates.Closed;
                     obj.GetComponent<SpriteRenderer>().sprite = TileArt[(int)Tiles.wall];
+                }
+                else if (perlin[j,i] > 0.775f)
+                {
+                    obj.GetComponent<Tile>().State = Tile.TileStates.Closed;
+                    obj.GetComponent<SpriteRenderer>().sprite = TileArt[(int)Tiles.stone];
+                }
+                else if (perlin[j,i] > 0.625f)
+                {
+                    obj.GetComponent<Tile>().State = Tile.TileStates.Open;
+                    obj.GetComponent<SpriteRenderer>().sprite = TileArt[(int)Tiles.forest];
+                }
+                else if (perlin[j,i] < 0.25f)
+                {
+                    obj.GetComponent<Tile>().State = Tile.TileStates.Closed;
+                    obj.GetComponent<SpriteRenderer>().sprite = TileArt[(int)Tiles.water];
+                }
+                else if (perlin[j,i] > 0.25f && perlin[j,i] < 0.325f)
+                {
+                    obj.GetComponent<Tile>().State = Tile.TileStates.Open;
+                    obj.GetComponent<SpriteRenderer>().sprite = TileArt[(int)Tiles.sand];
                 }
                 else
                 {
@@ -45,19 +82,7 @@ public class BoardCreator : MonoBehaviour {
                 tiles.Add(obj);
             }
         }
-        
-        
-        //spawn ponds
-        int water = Random.Range(0, 3);
-        Debug.Log("Number of Ponds: " + water);
-        int size = Random.Range(1, 6);
-        Debug.Log("Size of Ponds: " + size);
-        for (int i = 0; i < water; i++)
-        {
 
-        }
-         
-
-        return tiles.ToArray();
+            return tiles.ToArray();
 	}
 }
