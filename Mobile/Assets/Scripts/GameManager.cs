@@ -3,7 +3,11 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour {
 
+<<<<<<< HEAD
     public CameraControl cam;
+=======
+    public CameraControl control;
+>>>>>>> bd21dd84efdca799f5d5a439b482adf80bb94f18
     public GameObject boardParent;
     public BoardManager Board;
     public Player player;
@@ -48,6 +52,7 @@ public class GameManager : MonoBehaviour {
 
     public void ShowPlayerMovement()
     {
+<<<<<<< HEAD
         if (cam.mode == CameraControl.SelectedMode.None)
         {
             Player p = getCurrentPlayer();
@@ -61,6 +66,11 @@ public class GameManager : MonoBehaviour {
             cam.mode = CameraControl.SelectedMode.None;
             Board.DeselectTiles(true, true);
         }
+=======
+        Player p = getCurrentPlayer();
+        Board.selectMoveTiles(p.tileID, p.MoveLeft);
+        control.mode = CameraControl.SelectedMode.Move;
+>>>>>>> bd21dd84efdca799f5d5a439b482adf80bb94f18
     }
 
     public void MovePlayer(Tile moveTo)
@@ -74,6 +84,12 @@ public class GameManager : MonoBehaviour {
 
     public void ShowPlayerAttack(Player p)
     {
+        
+    }
+
+    public void ShowAttackDistance()
+    {
+        Weapon p = getCurrentPlayer().Weapon;
         
     }
 

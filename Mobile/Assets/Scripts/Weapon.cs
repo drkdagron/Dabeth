@@ -1,9 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+<<<<<<< HEAD
 public class Weapon : MonoBehaviour
 {
     public int RangeMax = 5;        //this is max range of the weapon
     public int EffRangeMin = 3;     //this is the minimum effective range
     public int EffRangeMax = 5;     //this is the maximum effective range
+=======
+public class Weapon : MonoBehaviour {
+
+	// Use this for initialization
+	void Start () {
+	
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+>>>>>>> bd21dd84efdca799f5d5a439b482adf80bb94f18
 }

@@ -175,6 +175,21 @@ public class CameraControl : MonoBehaviour {
                             Ray r = cam.ScreenPointToRay(Input.GetTouch(0).position);
                             RaycastHit2D hit = Physics2D.Raycast(r.origin, r.direction);
                             Tile t = hit.collider.GetComponent<Tile>();
+<<<<<<< HEAD
+=======
+                            /*
+                            if (mode == SelectedMode.None)
+                            {
+                                Debug.Log(t.ID);
+                                if (game.getCurrentPlayer().tileID == t.ID && game.getCurrentPlayer().MoveLeft != 0)
+                                {
+                                    //board.selectTiles(hit.collider.GetComponent<Tile>().ID, game.getCurrentPlayer().MoveLeft);
+                                    mode = SelectedMode.Move;
+                                }
+                                selectedTile = hit.collider.GetComponent<Tile>().ID;
+                            }
+                            */
+>>>>>>> bd21dd84efdca799f5d5a439b482adf80bb94f18
                             if (mode == SelectedMode.Move)
                             {
                                 if (t.Selected())
