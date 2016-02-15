@@ -46,6 +46,23 @@ public class BoardManager : MonoBehaviour
         }
         return null;
     }
+    public GameObject getUnoccupiedTile()
+    {
+        bool open = false;
+        while (open == false)
+        {
+            int i = getRandom();
+            Tile t = getTileAtID(i).GetComponent<Tile>();
+            if (t.State != Tile.TileStates.Closed)
+            {
+                if (t.Occupied == false)
+                {
+                    return getTileAtID(i);
+                }
+            }
+        }
+        return null;
+    }
 
     public void Setup(int x, int y, GameObject[] list)
     {
@@ -115,6 +132,40 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
+    public List<int> DevSelectTilesAround(int id, int stage)
+    {
+        List<int> tiles = new List<int>();
+        tiles.AddRange(getTileAtID(id).GetComponent<Tile>().Neighbours);
+        for (int count = 0; count < stage - 1; count++)
+        {
+            for (int i = tiles.Count-1; i > 0; i--)
+            {
+                for (int j =0; j < 6; j++)
+                {
+                    Tile t = getTileAtID(tiles[i]).GetComponent<Tile>();
+                    if (t.Neighbours[j] != -1 && tiles.Contains(t.Neighbours[j]) == false)
+                    {
+                        tiles.Add(t.Neighbours[j]);
+                    }
+                }
+            }
+            string test = "stop here";
+        }
+        return tiles;
+    }
+    public void selectRangeTiles(int id, int stage)
+    {
+        List<int> tiles = selectTilesAround(id, stage);
+        for (int i = 0; i < tiles.Count; i++)
+        {
+            Tile t = getTileAtID(tiles[i]).GetComponent<Tile>();
+            //if (id != t.ID)
+            //{
+            //    getTileAtID(tiles[i]).transform.FindChild("Range").gameObject.SetActive(true);
+            //}
+        }
+        Debug.Log("Done");
+    }
     public void selectTiles(Vector2 p, int stage)
     {
         //selectTiles(getTileAtPos(p).GetComponent<Tile>().ID, stage);
@@ -146,6 +197,39 @@ public class BoardManager : MonoBehaviour
         Debug.Log(tiles.Count);
         return tiles;
     }
+    public List<int> selectTileRingAt(int id, int range)
+    {
+        List<int> t = new List<int>();      //this the list of tiles we dont want
+        List<int> tiles = new List<int>();  //this is the list of tiles we want to return
+        t.AddRange(tilesAround(id));
+        for (int i= 1; i < range; i++)
+        {
+            Debug.Log("Ring: i = " + i + ",  range = " + range);
+            for (int j = t.Count-1; j > -1; j--)
+            {
+                List<int> tmp = tilesAround(t[j]);
+                for (int k = 0; k < tmp.Count; k++)
+                {
+                    if (!t.Contains(tmp[k]))
+                    {
+                        if (i + 1 == range)
+                        {
+                            tiles.Add(tmp[k]);
+                        }
+
+                        t.Add(tmp[k]);
+                    }
+
+                }
+
+            }
+            Debug.Log("Tile Count: " + t.Count);
+        }
+
+        Debug.Log("ENDING TILE COUNT: " + tiles.Count);
+        return tiles;
+    }
+
 
     public int TilePosDistanceBetween(int idTo, int idFrom)
     {
@@ -169,7 +253,7 @@ public class BoardManager : MonoBehaviour
                     }
                     else
                     {
-                        Debug.Log(total);
+                        //Debug.Log(total);
                         return newStage;
                     }
                     
@@ -182,6 +266,8 @@ public class BoardManager : MonoBehaviour
 
         //selectStageFrom(newT, idTo, -1, newStage);
     }
+
+
 
     /*
     public int selectStageFrom(int idTo, int idFrom)

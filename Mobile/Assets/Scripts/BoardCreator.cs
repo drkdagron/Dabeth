@@ -83,6 +83,31 @@ public class BoardCreator : MonoBehaviour {
             }
         }
 
-            return tiles.ToArray();
+        /*
+        for (int i = 0; i < tiles.Count; i++)
+        {
+            for (int j = 0; j < tiles.Count; j++)
+            {
+                if (i != j)
+                {
+                    float dist = Vector3.Distance(tiles[i].transform.position, tiles[j].transform.position);
+                    if (dist < 1.5f)
+                    {
+                        bool space = true;
+                        for (int k = 0; k < tiles[i].GetComponent<Tile>().Neighbours.Length; k++)
+                        {
+                            if (tiles[i].GetComponent<Tile>().Neighbours[k] == -1 && space == true)
+                            {
+                                tiles[i].GetComponent<Tile>().Neighbours[k] = tiles[j].GetComponent<Tile>().ID;
+                                space = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        */
+            
+        return tiles.ToArray();
 	}
 }

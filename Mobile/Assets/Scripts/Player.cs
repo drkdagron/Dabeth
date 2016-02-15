@@ -1,48 +1,15 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
-public class Player : MonoBehaviour {
+public class Player : Entity {
 
-    public GameManager game;
+    public List<string> foundItems;
 
-    public string Name;
 
-    public int HealthTotal;
-    public int Health;
-    public int Armor;
 
-    public int tileID;
+    
 
-    public int MoveLeft;
-    public int Move;
+    
 
-    public Weapon Weapon { get; set; }
 
-    public void ResetTurn()
-    {
-        Move = 3;
-        MoveLeft = Move;
-        HealthTotal = 100;
-        Health = HealthTotal;
-    }
-
-    public void PlacePlayer(GameObject tile, int moves)
-    {
-        GameObject prev = game.Board.getTileAtID(tileID);
-        Vector3 edge = tile.transform.position - prev.transform.position;
-        float f = Mathf.Atan2(edge.y, edge.x);
-
-        this.transform.position = tile.transform.position + new Vector3(0,0,-0.5f);
-        tileID = tile.GetComponent<Tile>().ID;
-        MoveLeft -= moves;
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, Mathf.Rad2Deg * f));
-    }
-
-    public void Init(GameManager game, GameObject tile)
-    {
-        this.game = game;
-        this.transform.position = tile.transform.position + new Vector3(0, 0, -0.5f);
-        this.tileID = tile.GetComponent<Tile>().ID;
-        transform.rotation = Quaternion.Euler(0, 0, 90);
-    }
 }
