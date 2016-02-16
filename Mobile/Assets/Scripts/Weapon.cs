@@ -8,6 +8,9 @@ public class Weapon : MonoBehaviour
     public int EffRangeMin = 3;     //this is the minimum effective range
     public int EffRangeMax = 5;     //this is the maximum effective range
 
+    public int Rolls = 3;
+    public int DSize = 20;
+
 	// Use this for initialization
 	void Start () {
 	

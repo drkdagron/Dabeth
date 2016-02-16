@@ -123,9 +123,14 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    public void AttackPlayer(Player pAtk, Player pDef)
+    public void DebugAttack()
     {
+        Combat.Fight(player, AI.Enemies[0].GetComponent<Enemy>());
+    }
 
+    public void AttackPlayer(Player pAtk, Enemy pDef)
+    {
+        Combat.Fight(pAtk, pDef);
     }
 
     public void PickupLoot(Player player, object item)

@@ -19,6 +19,8 @@ public class Entity : MonoBehaviour
     bool Alive = true;
 
     public Debug_Weapon.WeaponType Weapon;
+    public Weapon weapon;
+    public Armor armor;
 
     public void Heal(int val)
     {

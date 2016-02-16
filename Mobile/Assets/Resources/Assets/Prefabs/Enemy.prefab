@@ -9,6 +9,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 460616}
   - 114: {fileID: 11418788}
+  - 114: {fileID: 11462362}
+  - 114: {fileID: 11456026}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -111,8 +113,38 @@ MonoBehaviour:
   tileID: 0
   MoveLeft: 0
   Move: 0
+  Weapon: 5
+  weapon: {fileID: 11462362}
+  armor: {fileID: 11456026}
   Target: {fileID: 0}
+  manager: {fileID: 0}
   AIState: 0
+--- !u!114 &11456026
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 116850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b83ac76ecc17a54fb1ba648f7eb1c8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11462362
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 116850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af40faa73368db4459e24e8942b75284, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RangeMax: 5
+  EffRangeMin: 3
+  EffRangeMax: 5
+  Rolls: 3
 --- !u!136 &13620422
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -132,7 +164,11 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: Weapon
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 116850}
