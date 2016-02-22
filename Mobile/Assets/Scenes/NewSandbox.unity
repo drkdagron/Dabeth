@@ -377,6 +377,7 @@ GameObject:
   - 4: {fileID: 187646321}
   - 114: {fileID: 187646320}
   - 114: {fileID: 187646322}
+  - 114: {fileID: 187646323}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -395,11 +396,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5da4fd7f88c8534eb1714c5819d1b37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 867950499}
   boardParent: {fileID: 1051070079}
   Board: {fileID: 1051070080}
+  cam: {fileID: 867950499}
   player: {fileID: 11421140, guid: 39e10cab96bc55f40a1b49b715c09327, type: 2}
   AI: {fileID: 187646322}
+  Enemies: 5
   BoardWidth: 20
   BoardHeight: 14
   currentTurn: -1
@@ -409,9 +411,7 @@ MonoBehaviour:
   - {fileID: 787409734}
   - {fileID: 876149930}
   UIManager: {fileID: 907244024}
-  Enemies: 5
-  TestTile1: 0
-  TestTile2: 0
+  combatManager: {fileID: 187646323}
 --- !u!4 &187646321
 Transform:
   m_ObjectHideFlags: 0
@@ -441,6 +441,19 @@ MonoBehaviour:
   curAI: 0
   TimePerTurn: 0.5
   Timer: 0
+--- !u!114 &187646323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 187646319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cd87fa965d0af344bf28463c82e758d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  game: {fileID: 187646320}
+  CombatWait: 0
 --- !u!1 &223625421
 GameObject:
   m_ObjectHideFlags: 0
@@ -851,6 +864,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
+--- !u!1001 &769656439
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 422982, guid: 2accdd1e428e6da4ab9f621cb1fb42da, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 6.6000004
+      objectReference: {fileID: 0}
+    - target: {fileID: 422982, guid: 2accdd1e428e6da4ab9f621cb1fb42da, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 3.09125
+      objectReference: {fileID: 0}
+    - target: {fileID: 422982, guid: 2accdd1e428e6da4ab9f621cb1fb42da, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 422982, guid: 2accdd1e428e6da4ab9f621cb1fb42da, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 422982, guid: 2accdd1e428e6da4ab9f621cb1fb42da, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 422982, guid: 2accdd1e428e6da4ab9f621cb1fb42da, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 422982, guid: 2accdd1e428e6da4ab9f621cb1fb42da, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 422982, guid: 2accdd1e428e6da4ab9f621cb1fb42da, type: 2}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 11436436, guid: 2accdd1e428e6da4ab9f621cb1fb42da, type: 2}
+      propertyPath: OneShot
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 2accdd1e428e6da4ab9f621cb1fb42da, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &787409734
 GameObject:
   m_ObjectHideFlags: 0
@@ -1271,7 +1330,8 @@ MonoBehaviour:
   - {fileID: 876149930}
   - {fileID: 787409734}
   game: {fileID: 187646320}
-  enemy: {fileID: 0}
+  enemy: {fileID: 1662392480}
+  eSystem: {fileID: 0}
 --- !u!1 &954342733
 GameObject:
   m_ObjectHideFlags: 0
@@ -1748,7 +1808,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1190447565}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 187646320}
+        m_MethodName: ShowPlayerAttack
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1190447565
@@ -2375,7 +2446,7 @@ MonoBehaviour:
   pPortrait: {fileID: 2063794305}
   HealthBar: {fileID: 1849140622}
   HealthText: {fileID: 1395596656}
-  HealthSize: {x: 0, y: 0}
+  HealthSize: {x: 154, y: 26}
 --- !u!1 &1820588837
 GameObject:
   m_ObjectHideFlags: 0

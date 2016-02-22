@@ -4,20 +4,33 @@ public class EnemyManager : MonoBehaviour {
 
     public bool Playing;
     public GameManager Game;
-    public GameObject[] Enemies;
+    public List<GameObject> Enemies;
 
     public int curAI = 0;
     public float TimePerTurn;
     public float Timer;
 
+    public GameObject EnemyOnTile(int id)
+    {
+        for (int i = 0; i < Enemies.Count; i++)
+        {
+            if (Enemies[i].GetComponent<Enemy>().tileID == id)
+            {
+                return Enemies[i];
+            }
+        }
+
+        return null;
+    }
+
     public void Init(int count)
     {
-        Enemies = new GameObject[count];
+        Enemies = new List<GameObject>();
         for (int i= 0; i < count; i++)
         {
             GameObject tile = Game.Board.getUnoccupiedTile();
             tile.GetComponent<Tile>().Occupied = true;
-            Enemies[i] = Instantiate(Resources.Load("Assets/Prefabs/Enemy"), tile.transform.position, Quaternion.identity) as GameObject;
+            Enemies.Add(Instantiate(Resources.Load("Assets/Prefabs/Enemy"), tile.transform.position, Quaternion.identity) as GameObject);
             Enemies[i].GetComponent<Entity>().game = Game;
             Enemies[i].GetComponent<Entity>().Weapon = Debug_Weapon.WeaponType.Pistol;
             Enemies[i].GetComponent<Entity>().tileID = tile.GetComponent<Tile>().ID;
@@ -28,7 +41,7 @@ public class EnemyManager : MonoBehaviour {
 
     public void PlayTurn()
     {
-        for (int i= 0; i < Enemies.Length; i++)
+        for (int i= 0; i < Enemies.Count; i++)
         {
             Enemies[i].GetComponent<Enemy>().PlayTurn();
         }
@@ -38,7 +51,7 @@ public class EnemyManager : MonoBehaviour {
 
     public void PlayerFound()
     {
-        for (int i = 0; i < Enemies.Length; i++)
+        for (int i = 0; i < Enemies.Count; i++)
         {
             Enemies[i].GetComponent<Enemy>().AIState = Enemy.EnemyState.CHASE;
         }
@@ -46,7 +59,7 @@ public class EnemyManager : MonoBehaviour {
 
     public void PlayerLost()
     {
-        for (int i = 0; i < Enemies.Length; i++)
+        for (int i = 0; i < Enemies.Count; i++)
         {
             Enemies[i].GetComponent<Enemy>().AIState = Enemy.EnemyState.PATROL;
         }
@@ -59,7 +72,7 @@ public class EnemyManager : MonoBehaviour {
             Timer += Time.deltaTime;
             if (Timer > TimePerTurn)
             {
-                if (curAI < Enemies.Length)
+                if (curAI < Enemies.Count)
                 {
                     Enemies[curAI].GetComponent<Enemy>().PlayTurn();
                     curAI++;

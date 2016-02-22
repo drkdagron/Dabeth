@@ -22,6 +22,8 @@ public class Entity : MonoBehaviour
     public Weapon weapon;
     public Armor armor;
 
+    public bool Fired = false;
+
     public void Heal(int val)
     {
         Health += val;
@@ -59,5 +61,6 @@ public class Entity : MonoBehaviour
     {
         Move = 3;
         MoveLeft = Move;
+        Fired = false;
     }
 }

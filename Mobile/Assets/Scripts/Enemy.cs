@@ -41,12 +41,14 @@ public class Enemy : Entity {
 
     void CheckState()
     {
-        int dist = game.Board.TilePosDistanceBetween(tileID, game.player.tileID);
+        float dist = game.Board.TilePosDistanceBetween(tileID, game.player.tileID);
         //if in range, make target change state to chase
         if (dist <= Debug_Weapon.Range(Weapon))
         {
             manager.PlayerFound();
-            AIState = EnemyState.CHASE;
+            AIState = EnemyState.ATTACK;
+            game.combatManager.Fight(game, this, game.player);
+            game.UIManager.setHealthBar(game.player);
         }
         else
         {

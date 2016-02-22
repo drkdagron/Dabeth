@@ -3,12 +3,17 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour {
 
-    public CameraControl cam;
-
+    //Board and Manager
     public GameObject boardParent;
     public BoardManager Board;
+
+    //Camera controller
+    public CameraControl cam;
+
+    //Players on board
     public Player player;
     public EnemyManager AI;
+    public int Enemies;
 
     public int BoardWidth;
     public int BoardHeight;
@@ -16,18 +21,11 @@ public class GameManager : MonoBehaviour {
     public int currentTurn = -1;     //this will keep track of which turn it is...
     public bool playerFirst;    //this will determine with currentTurn whos turn it is... if true  player = currentTurn %= 0 else player = currentTurn %= 1
 
+    //UI Manager
     public GameObject[] UIPlayerOnly;
     public UIManager UIManager;
 
-    public int Enemies;
-
-    public int TestTile1;
-    public int TestTile2;
-
-    public void TestDistance()
-    {
-        Debug.Log("Distance: " + Vector3.Distance(Board.getTileAtID(TestTile1).transform.position, Board.getTileAtID(TestTile2).transform.position));
-    }
+    public CombatManager combatManager;
 
     public Player getCurrentPlayer()
     {
@@ -59,15 +57,101 @@ public class GameManager : MonoBehaviour {
         UIManager.setUI(player);
     }
 
+    #region UI Controls
+
+    public void UI_SelectTile(Tile id)
+    {
+        Board.DeselectTiles(true, true);            //reset the tiles on the board
+        if (id.State != Tile.TileStates.Border)     //make sure selected tile is not a border
+        {
+            id.TouchedTile();                       //activate the select hex layer
+            cam.selectedTile = id.ID;
+
+            GameObject e = AI.EnemyOnTile(id.ID);
+            if (e != null)
+                UIManager.setEnemyUI(e.GetComponent<Enemy>());
+            else
+                UIManager.hideEnemyUI();
+        }
+    }
+
+    public void UI_SelectMove(Tile id)
+    {
+        if (id.Selected())
+        {
+            Board.buildAccept(id.ID);
+            cam.mode = CameraControl.SelectedMode.AcceptMove;
+            cam.selectedTile = id.ID;
+        }
+    }
+
+    public void UI_AcceptMove(Tile id)
+    {
+        MovePlayer(cam.selectedTile);
+        if (player.MoveLeft == 0)
+            UIManager.SetMoveUI(false);
+        Board.DeselectTiles(true, true);
+        cam.mode = CameraControl.SelectedMode.None;
+    }
+
+    public void UI_CancelMove(Tile id)
+    {
+        Board.DeselectTiles(false, true);
+    }
+
+    public void UI_ReselectMove(Tile id)
+    {
+        Board.DeselectTiles(false, true);
+        Board.buildAccept(id.ID);
+    }
+
+    public void UI_SelectFire(Tile id)
+    {
+        if (id.Target())
+        {
+            UIManager.setEnemyUI(AI.EnemyOnTile(id.ID).GetComponent<Enemy>());
+            Board.buildAccept(id.ID);
+            cam.mode = CameraControl.SelectedMode.AcceptFire;
+            cam.selectedTile = id.ID;
+        }
+    }
+
+    public void UI_AcceptFire(Tile id)
+    {
+        combatManager.Fight(this, player, AI.EnemyOnTile(cam.selectedTile).GetComponent<Enemy>());
+        UIManager.setEnemyUI(AI.EnemyOnTile(cam.selectedTile).GetComponent<Enemy>());
+        Board.DeselectTiles(true, true);
+        cam.mode = CameraControl.SelectedMode.None;
+        UIManager.SetCombatUI(false);
+        CheckEnemies();
+    }
+
+    public void UI_CancelFire(Tile id)
+    {
+        Board.DeselectTiles(false, true);
+    }
+
+    public void UI_ReselectFire(Tile id)
+    {
+        Board.DeselectTiles(false, true);
+        Board.buildAccept(id.ID);
+    }
+
+    #endregion
+
+    #region Player Movement
+
     public void ShowPlayerMovement()
     {
-        if (cam.mode == CameraControl.SelectedMode.None)
+        if (cam.mode == CameraControl.SelectedMode.None || cam.mode == CameraControl.SelectedMode.Fire)
         {
+            Board.DeselectTiles(true, true);
+
             Player p = getCurrentPlayer();
             Board.selectMoveTiles(p.tileID, p.MoveLeft);
             cam.mode = CameraControl.SelectedMode.Move;
             //cam.CenterCamera(p.tileID);
-            UIManager.setMoveBar(p);
+            UIManager.PlayerMove(p);
         }
         else
         {
@@ -82,8 +166,13 @@ public class GameManager : MonoBehaviour {
         Tile target = Board.getTileAtID(moveTo).GetComponent<Tile>();
         float d = Board.TilePosDistanceBetween(target.ID, curr.ID);
         player.PlaceEntity(target.gameObject, (int)d);
-        UIManager.setMoveBar(getCurrentPlayer());
+        UIManager.PlayerMove(getCurrentPlayer());
     }
+
+    #endregion
+
+    #region Enemy Movement
+
     public void MoveEnemy(GameObject obj, int moveTo)
     {
         Tile curr = Board.getTileAtID(obj.GetComponent<Enemy>().tileID).GetComponent<Tile>();
@@ -92,26 +181,48 @@ public class GameManager : MonoBehaviour {
         obj.GetComponent<Enemy>().PlaceEntity(target.gameObject, (int)d);
     }
 
+    #endregion
+
     public void AIStartTurn()
     {
         AI.Playing = true;
         AI.curAI = 0;
     }
-
     public void AICompletedTurn()
     {
         NextTurn();
     }
 
-    public void ShowPlayerAttack(Player p)
+    #region Player Combat
+
+    public void ShowPlayerAttack()
     {
-        
+        if (cam.mode == CameraControl.SelectedMode.None || cam.mode == CameraControl.SelectedMode.Move)
+        {
+            Board.DeselectTiles(true, true);
+
+            for (int i = 0; i < AI.Enemies.Count; i++)
+            {
+                if (Board.TilePosDistanceBetween(getCurrentPlayer().tileID, AI.Enemies[i].GetComponent<Enemy>().tileID) <= getCurrentPlayer().weapon.RangeMax)
+                {
+                    Board.getTileAtID(AI.Enemies[i].GetComponent<Enemy>().tileID).GetComponent<Tile>().Crosshair(true);
+                }
+            }
+
+            cam.mode = CameraControl.SelectedMode.Fire;
+        }
+        else
+        {
+            Board.DeselectTiles(true, false);
+            cam.mode = CameraControl.SelectedMode.None;
+        }
     }
 
     public void ShowAttackDistance()
     {
-        if (cam.mode == CameraControl.SelectedMode.None)
+        if (cam.mode == CameraControl.SelectedMode.None || cam.mode == CameraControl.SelectedMode.Move)
         {
+            Board.DeselectTiles(true, true);
             int range = Debug_Weapon.Range(getCurrentPlayer().Weapon);
             Board.selectRangeTiles(getCurrentPlayer().tileID, range);
             cam.mode = CameraControl.SelectedMode.Fire;
@@ -125,13 +236,35 @@ public class GameManager : MonoBehaviour {
 
     public void DebugAttack()
     {
-        Combat.Fight(player, AI.Enemies[0].GetComponent<Enemy>());
+        //Combat.Fight(this, player, AI.Enemies[0].GetComponent<Enemy>());
     }
 
     public void AttackPlayer(Player pAtk, Enemy pDef)
     {
-        Combat.Fight(pAtk, pDef);
+        //Combat.Fight(this, pAtk, pDef);
     }
+
+    #endregion
+
+    #region Enemy Attack
+
+    public void CheckEnemies()
+    {
+        for (int i = AI.Enemies.Count - 1; i > -1; i--)
+        {
+            if (AI.Enemies[i].GetComponent<Enemy>().Health <= 0)
+            {
+                Spawner.SpawnExplosion(AI.Enemies[i].transform.position);
+                GameObject.Destroy(AI.Enemies[i]);
+                AI.Enemies.RemoveAt(i);
+                UIManager.hideEnemyUI();
+            }
+        }
+    }
+
+    #endregion
+
+    #region Loot Drop
 
     public void PickupLoot(Player player, object item)
     {
@@ -143,6 +276,10 @@ public class GameManager : MonoBehaviour {
 
     }
 
+    #endregion
+
+    #region Game States
+
     public void FinishGame()
     {
 
@@ -150,14 +287,16 @@ public class GameManager : MonoBehaviour {
 
     public void NextTurn()
     {
+        Board.DeselectTiles(true, true);
         currentTurn++;
         UIManager.setTurnCounter();
         if (currentTurn % 2 == 0 && playerFirst || currentTurn % 2 == 1 && !playerFirst)
         {
             player.ResetTurn();
-            UIManager.setMoveBar(player);
+            UIManager.PlayerMove(player);
             //Debug.Log("Player Turn");
             UIManager.PlayerUI(true);
+            UIManager.NextTurn();
         }
         else
         {
@@ -172,8 +311,13 @@ public class GameManager : MonoBehaviour {
 
     }
 
-	// Use this for initialization
+    #endregion
+
+    // Use this for initialization
 	void Start () {
         SetupGame();
 	}
+
+
+    
 }

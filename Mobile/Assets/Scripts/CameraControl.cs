@@ -13,6 +13,7 @@ public class CameraControl : MonoBehaviour {
         None,
         AcceptMove,
         Fire,
+        AcceptFire,
     };
     public SelectedMode mode = SelectedMode.None;
 
@@ -82,56 +83,60 @@ public class CameraControl : MonoBehaviour {
 
 	// Update is called once per frame
 	void FixedUpdate () {
-        
+
         if (Input.GetMouseButtonDown(0))
         {
             if (eSystem.currentSelectedGameObject != null)
             {
-                Debug.Log("UI Hit");
+                return;
             }
             else
             {
                 Ray r = cam.ScreenPointToRay(Input.mousePosition);
                 RaycastHit2D hit = Physics2D.Raycast(r.origin, r.direction);
-                if (hit.collider.tag == "Tile")
+                if (hit.collider != null && hit.collider.tag == "Tile")
                 {
                     Tile t = hit.collider.GetComponent<Tile>();
                     if (mode == SelectedMode.None)
                     {
-                        Debug.Log(t.ID);
-                        if (game.getCurrentPlayer().tileID == t.ID && game.getCurrentPlayer().MoveLeft != 0)
-                        {
-                            board.selectMoveTiles(game.getCurrentPlayer().tileID, game.getCurrentPlayer().MoveLeft);
-                            mode = SelectedMode.Move;
-                        }
-                        selectedTile = hit.collider.GetComponent<Tile>().ID;
+                        game.UI_SelectTile(t);
                     }
                     else if (mode == SelectedMode.Move)
                     {
-                        if (t.Selected())
-                        {
-                            board.buildAccept(t.ID);
-                            mode = SelectedMode.AcceptMove;
-                            selectedTile = t.ID;
-                        }
+                        game.UI_SelectMove(t);
                     }
                     else if (mode == SelectedMode.AcceptMove)
                     {
                         if (t.uiState == Tile.TileUIState.Accept)
                         {
-                            game.MovePlayer(selectedTile);
-                            board.DeselectTiles(true, true);
-                            mode = SelectedMode.None;
+                            game.UI_AcceptMove(t);
                         }
                         else if (t.uiState == Tile.TileUIState.Cancel)
                         {
-                            Debug.Log("Cancel Hit");
-                            board.DeselectTiles(false, true);
+                            game.UI_CancelMove(t);
                         }
                         else if (t.Selected())
                         {
-                            board.DeselectTiles(false, true);
-                            board.buildAccept(t.ID);
+                            game.UI_ReselectMove(t);
+                        }
+                    }
+                    else if (mode == SelectedMode.Fire)
+                    {
+                        game.UI_SelectFire(t);
+                    }
+                    else if (mode == SelectedMode.AcceptFire)
+                    {
+                        if (t.uiState == Tile.TileUIState.Accept)
+                        {
+                            game.UI_AcceptFire(t);
+                        }
+                        else if (t.uiState == Tile.TileUIState.Cancel)
+                        {
+                            game.UI_CancelFire(t);
+                        }
+                        else if (t.Target())
+                        {
+                            game.UI_ReselectFire(t);
                         }
                     }
                 }
@@ -175,34 +180,50 @@ public class CameraControl : MonoBehaviour {
                         {
                             Ray r = cam.ScreenPointToRay(Input.GetTouch(0).position);
                             RaycastHit2D hit = Physics2D.Raycast(r.origin, r.direction);
-                            Tile t = hit.collider.GetComponent<Tile>();
-
-                            if (mode == SelectedMode.Move)
+                            if (hit.collider.tag == "Tile")
                             {
-                                if (t.Selected())
+                                Tile t = hit.collider.GetComponent<Tile>();
+                                if (mode == SelectedMode.None)
                                 {
-                                    board.buildAccept(t.ID);
-                                    mode = SelectedMode.AcceptMove;
-                                    selectedTile = t.ID;
+                                    game.UI_SelectTile(t);
                                 }
-                            }
-                            else if (mode == SelectedMode.AcceptMove)
-                            {
-                                if (t.uiState == Tile.TileUIState.Accept)
+                                else if (mode == SelectedMode.Move)
                                 {
-                                    game.MovePlayer(selectedTile);
-                                    board.DeselectTiles(true, true);
-                                    mode = SelectedMode.None;
+                                    game.UI_SelectMove(t);
                                 }
-                                else if (t.uiState == Tile.TileUIState.Cancel)
+                                else if (mode == SelectedMode.AcceptMove)
                                 {
-                                    Debug.Log("Cancel Hit");
-                                    board.DeselectTiles(false, true);
+                                    if (t.uiState == Tile.TileUIState.Accept)
+                                    {
+                                        game.UI_AcceptMove(t);
+                                    }
+                                    else if (t.uiState == Tile.TileUIState.Cancel)
+                                    {
+                                        game.UI_CancelMove(t);
+                                    }
+                                    else if (t.Selected())
+                                    {
+                                        game.UI_ReselectMove(t);
+                                    }
                                 }
-                                else if (t.Selected())
+                                else if (mode == SelectedMode.Fire)
                                 {
-                                    board.DeselectTiles(false, true);
-                                    board.buildAccept(t.ID);
+                                    game.UI_SelectFire(t);
+                                }
+                                else if (mode == SelectedMode.AcceptFire)
+                                {
+                                    if (t.uiState == Tile.TileUIState.Accept)
+                                    {
+                                        game.UI_AcceptFire(t);
+                                    }
+                                    else if (t.uiState == Tile.TileUIState.Cancel)
+                                    {
+                                        game.UI_CancelFire(t);
+                                    }
+                                    else if (t.Target())
+                                    {
+                                        game.UI_ReselectFire(t);
+                                    }
                                 }
                             }
                         }

@@ -5,11 +5,4 @@ public class Player : Entity {
 
     public List<string> foundItems;
 
-
-
-    
-
-    
-
-
 }

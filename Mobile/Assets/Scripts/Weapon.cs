@@ -11,6 +11,8 @@ public class Weapon : MonoBehaviour
     public int Rolls = 3;
     public int DSize = 20;
 
+    public GameObject Barrel;
+
 	// Use this for initialization
 	void Start () {
 	

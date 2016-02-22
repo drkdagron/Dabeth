@@ -18,6 +18,7 @@ public class Tile : MonoBehaviour {
         Accept,
         Cancel,
         Fog,
+        Border,
     }
 
     public GameObject selected;
@@ -25,15 +26,18 @@ public class Tile : MonoBehaviour {
     {
         return transform.FindChild("Selected").gameObject.activeSelf;
     }
+    public bool Target()
+    {
+        return transform.FindChild("XHair").gameObject.activeSelf;
+    }
 
     public TileStates State;
-    public Vector2 BoardPosition;
     public int ID;
+
+    public Vector3 Cube;
 
     public bool Occupied = false;
     public bool Chest;
-
-    public int[] Neighbours = {-1,-1,-1,-1,-1,-1};
 
     public void DropChest()
     {
@@ -41,11 +45,22 @@ public class Tile : MonoBehaviour {
         transform.FindChild("ChestDrop").gameObject.SetActive(true);
     }
 
+    public void TouchedTile()
+    {
+        transform.FindChild("SelectHex").gameObject.SetActive(true);
+    }
+    public void Crosshair(bool setup)
+    {
+        transform.FindChild("XHair").gameObject.SetActive(setup);
+    }
+
     public void Reset()
     {
         transform.FindChild("Selected").gameObject.SetActive(false);
         transform.FindChild("UILayer").gameObject.SetActive(false);
         transform.FindChild("Range").gameObject.SetActive(false);
+        transform.FindChild("SelectHex").gameObject.SetActive(false);
+        Crosshair(false);
         uiState = TileUIState.None;
     }
 

@@ -22,9 +22,9 @@ public class BoardManager : MonoBehaviour
         t.GetComponent<Tile>().uiState = (Tile.TileUIState)ui;
         t.transform.FindChild("UILayer").GetComponent<SpriteRenderer>().sprite = UISpriteTiles[(int)ui];
     }
-    public void setTileUI(bool act, Vector2 p, UISprite ui)
+    public void setTileUI(bool act, Vector3 p, UISprite ui)
     {
-        GameObject t = getTileAtPos(p);
+        GameObject t = getTileAtCube(p);
         t.transform.FindChild("UILayer").gameObject.SetActive(act);
         t.GetComponent<Tile>().uiState = (Tile.TileUIState)ui;
         t.transform.FindChild("UILayer").GetComponent<SpriteRenderer>().sprite = UISpriteTiles[(int)ui];
@@ -75,16 +75,6 @@ public class BoardManager : MonoBehaviour
     }
 
     #region Tile Getter
-    public GameObject getTileAtPos(Vector2 p)
-    {
-        for (int i = 0; i < Tiles.Length; i++)
-        {
-            if (Tiles[i].GetComponent<Tile>().BoardPosition == p)
-                return Tiles[i];
-        }
-
-        return null;
-    }
     public GameObject getTileAtID(int id)
     {
         for (int i = 0; i < Tiles.Length; i++)
@@ -95,16 +85,30 @@ public class BoardManager : MonoBehaviour
 
         return null;
     }
+    public GameObject getTileAtCube(int x, int y, int z)
+    {
+        for (int i= 0; i < Tiles.Length; i++)
+        {
+            if (Tiles[i].GetComponent<Tile>().Cube == new Vector3(x, y, z))
+                return Tiles[i];
+        }
+        return null;
+    }
+    public GameObject getTileAtCube(Vector3 cube)
+    {
+        for (int i = 0; i < Tiles.Length; i++)
+        {
+            if (Tiles[i].GetComponent<Tile>().Cube == cube)
+                return Tiles[i];
+        }
+        return null;
+    }
     #endregion
 
     #region TileUI Checker
     public bool getUIActiveTile(int id)
     {
         return getTileAtID(id).transform.FindChild("UIStyle").gameObject.activeSelf;
-    }
-    public bool getUIActiveTile(Vector2 p)
-    {
-        return getTileAtPos(p).transform.FindChild("UIStyle").gameObject.activeSelf;
     }
     #endregion
 
@@ -132,27 +136,7 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
-    public List<int> DevSelectTilesAround(int id, int stage)
-    {
-        List<int> tiles = new List<int>();
-        tiles.AddRange(getTileAtID(id).GetComponent<Tile>().Neighbours);
-        for (int count = 0; count < stage - 1; count++)
-        {
-            for (int i = tiles.Count-1; i > 0; i--)
-            {
-                for (int j =0; j < 6; j++)
-                {
-                    Tile t = getTileAtID(tiles[i]).GetComponent<Tile>();
-                    if (t.Neighbours[j] != -1 && tiles.Contains(t.Neighbours[j]) == false)
-                    {
-                        tiles.Add(t.Neighbours[j]);
-                    }
-                }
-            }
-            string test = "stop here";
-        }
-        return tiles;
-    }
+
     public void selectRangeTiles(int id, int stage)
     {
         List<int> tiles = selectTilesAround(id, stage);
@@ -230,44 +214,24 @@ public class BoardManager : MonoBehaviour
         return tiles;
     }
 
-
-    public int TilePosDistanceBetween(int idTo, int idFrom)
+    public float TilePosDistanceBetween(int from, int to)
     {
-        int total = 0;
-        int newStage = 1;
-        List<int> ids = new List<int>();
-        ids.Add(idFrom);
-        List<int> newT = new List<int>();
-        while (true)
-        {
-            for (int i = 0; i < ids.Count; i++)
-            {
-                List<int> tmpT = tilesAround(ids[i]);
+        Tile t1 = getTileAtID(to).GetComponent<Tile>();
+        Tile t2 = getTileAtID(from).GetComponent<Tile>();
 
-                for (int j = 0; j < tmpT.Count; j++)
-                {
-                    if (tmpT[j] != idTo)
-                    {
-                        if (!newT.Contains(tmpT[j]))
-                            newT.Add(tmpT[j]);
-                    }
-                    else
-                    {
-                        //Debug.Log(total);
-                        return newStage;
-                    }
-                    
-                }
-            }
-            ids.RemoveRange(0, ids.Count);
-            ids.AddRange(newT);
-            newStage++;
-        }
+        float x = Math.Abs(t1.Cube.x - t2.Cube.x);
+        float y = Math.Abs(t1.Cube.y - t2.Cube.y);
+        float z = Math.Abs(t1.Cube.z - t2.Cube.z);
 
-        //selectStageFrom(newT, idTo, -1, newStage);
+        if (x >= y && x >= z)
+            return x;
+        if (y >= x && y >= z)
+            return y;
+        if (z >= x && z >= y)
+            return z;
+
+        return 0;
     }
-
-
 
     /*
     public int selectStageFrom(int idTo, int idFrom)
@@ -319,46 +283,23 @@ public class BoardManager : MonoBehaviour
         return 0;
     }
     */
+
     public List<int> tilesAround(int id)
     {
         List<int> tiles = new List<int>();
-        Tile center = getTileAtID(id).GetComponent<Tile>();
+        Vector3[] neigh = new Vector3[6] {new Vector3(1, -1, 0), new Vector3(1, 0, -1), new Vector3(0, 1, -1),
+        new Vector3(-1, 1, 0), new Vector3(-1, 0, 1), new Vector3(0, -1, 1)};
 
-        if (center.BoardPosition.y > 1 || center.BoardPosition.y < yTiles -1)
+        Tile t = getTileAtID(id).GetComponent<Tile>();
+        for (int i= 0; i < neigh.Length; i++)
         {
-            if (getTileAtPos(center.BoardPosition + new Vector2(0, -1)).GetComponent<Tile>().State == Tile.TileStates.Open)
-                tiles.Add(getTileAtPos(new Vector2(center.BoardPosition.x, center.BoardPosition.y - 1)).GetComponent<Tile>().ID);
-            if (getTileAtPos(center.BoardPosition + new Vector2(0, 1)).GetComponent<Tile>().State == Tile.TileStates.Open)
-                tiles.Add(getTileAtPos(new Vector2(center.BoardPosition.x, center.BoardPosition.y + 1)).GetComponent<Tile>().ID);
+            GameObject tObj = getTileAtCube(t.Cube + neigh[i]);
+            if (tObj != null)
+                tiles.Add(tObj.GetComponent<Tile>().ID);
         }
-
-        if (center.BoardPosition.x % 2 == 0)
-        {
-            if (getTileAtPos(center.BoardPosition + new Vector2(-1, -1)).GetComponent<Tile>().State == Tile.TileStates.Open)
-                tiles.Add(getTileAtPos(center.BoardPosition + new Vector2(-1, -1)).GetComponent<Tile>().ID);    //down left
-            if (getTileAtPos(center.BoardPosition + new Vector2(-1, 0)).GetComponent<Tile>().State == Tile.TileStates.Open)
-                tiles.Add(getTileAtPos(center.BoardPosition + new Vector2(-1, 0)).GetComponent<Tile>().ID);    //down right
-            if (getTileAtPos(center.BoardPosition + new Vector2(1, -1)).GetComponent<Tile>().State == Tile.TileStates.Open)
-                tiles.Add(getTileAtPos(center.BoardPosition + new Vector2(1, -1)).GetComponent<Tile>().ID);          //up left
-            if (getTileAtPos(center.BoardPosition + new Vector2(1, 0)).GetComponent<Tile>().State == Tile.TileStates.Open)
-                tiles.Add(getTileAtPos(center.BoardPosition + new Vector2(1, 0)).GetComponent<Tile>().ID);          //down right
-        }
-        else
-        {
-            if (getTileAtPos(center.BoardPosition + new Vector2(-1, 0)).GetComponent<Tile>().State == Tile.TileStates.Open)
-                tiles.Add(getTileAtPos(center.BoardPosition + new Vector2(-1, 0)).GetComponent<Tile>().ID);    //down left
-            if (getTileAtPos(center.BoardPosition + new Vector2(-1, 1)).GetComponent<Tile>().State == Tile.TileStates.Open)
-                tiles.Add(getTileAtPos(center.BoardPosition + new Vector2(-1, 1)).GetComponent<Tile>().ID);    //down right
-            if (getTileAtPos(center.BoardPosition + new Vector2(1, 0)).GetComponent<Tile>().State == Tile.TileStates.Open)
-                tiles.Add(getTileAtPos(center.BoardPosition + new Vector2(1, 0)).GetComponent<Tile>().ID);          //up left
-            if (getTileAtPos(center.BoardPosition + new Vector2(1, 1)).GetComponent<Tile>().State == Tile.TileStates.Open)
-                tiles.Add(getTileAtPos(center.BoardPosition + new Vector2(1, 1)).GetComponent<Tile>().ID);          //down right
-        }
-
 
         return tiles;
     }
-    
 
     bool isGoodPosition(float x, float y)
     {
@@ -373,9 +314,9 @@ public class BoardManager : MonoBehaviour
     public void buildAccept(int id)
     {
         GameObject t = getTileAtID(id);
-        GameObject t2 = getTileAtPos(t.GetComponent<Tile>().BoardPosition + new Vector2(0, -1));
+        GameObject t2 = getTileAtCube(t.GetComponent<Tile>().Cube + new Vector3(-1, 1, 0));
         setTileUI(true, t2.GetComponent<Tile>().ID, UISprite.No);
-        GameObject t3 = getTileAtPos(t.GetComponent<Tile>().BoardPosition + new Vector2(0,1));
+        GameObject t3 = getTileAtCube(t.GetComponent<Tile>().Cube + new Vector3(1,-1, 0));
         setTileUI(true, t3.GetComponent<Tile>().ID, UISprite.Yes);
     }
 }

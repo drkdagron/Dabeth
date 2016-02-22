@@ -39,4 +39,29 @@ public class Debug_Weapon : MonoBehaviour {
                     return 1;
             }
     }
+    public static float FPS(WeaponType gun)
+    {
+        switch (gun)
+        {
+            case WeaponType.Pistol:
+                return 0.5f;
+            case WeaponType.SMG:
+                return 0.5f;
+            case WeaponType.Shotgun:
+                return 0.5f;
+            case WeaponType.Rifle:
+                return 0.5f;
+            case WeaponType.Burst:
+                return 0.5f;
+            case WeaponType.Sniper:
+                return 0.5f;
+            case WeaponType.HMG:
+                return 0.5f;
+            case WeaponType.None:
+                return 0.5f;
+            default:
+                return 0.5f;
+        }
+    }
+    
 }

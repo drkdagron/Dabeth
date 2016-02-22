@@ -43,13 +43,13 @@ public class BoardCreator : MonoBehaviour {
             {
                 GameObject obj;
                 if (i % 2 == 0)
-                    obj = (GameObject)Instantiate(tileObj, new Vector3(3 + j * 1.2f, i * 1.03f + 3, 0), Quaternion.identity);
+                    obj = (GameObject)Instantiate(tileObj, new Vector3(3 + j * 1.2f, i * 1.039230484541326f + 3, 0), Quaternion.identity);
                 else
-                    obj = (GameObject)Instantiate(tileObj, new Vector3(j * 1.2f + 3.6f, i * 1.03f + 3, 0), Quaternion.identity);
+                    obj = (GameObject)Instantiate(tileObj, new Vector3(j * 1.2f + 3.6f, i * 1.039230484541326f + 3, 0), Quaternion.identity);
 
                 if (i == 0 || j == 0 || i == height - 1 || j == width - 1)
                 {
-                    obj.GetComponent<Tile>().State = Tile.TileStates.Closed;
+                    obj.GetComponent<Tile>().State = Tile.TileStates.Border;
                     obj.GetComponent<SpriteRenderer>().sprite = TileArt[(int)Tiles.wall];
                 }
                 else if (perlin[j,i] > 0.775f)
@@ -77,8 +77,11 @@ public class BoardCreator : MonoBehaviour {
                     obj.GetComponent<Tile>().State = global::Tile.TileStates.Open;
                 }
                 obj.transform.parent = parent.transform;
-                obj.GetComponent<Tile>().BoardPosition = new Vector2(i, j);
                 obj.GetComponent<Tile>().ID = count++;
+                Debug.Log(i % 2);
+                float x = j - ((i - (i % 2)) / 2);
+                Debug.Log(x);
+                obj.GetComponent<Tile>().Cube = new Vector3(x, (x * -1) - i, i);
                 tiles.Add(obj);
             }
         }
