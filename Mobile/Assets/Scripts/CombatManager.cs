@@ -7,7 +7,15 @@ public class CombatManager : MonoBehaviour{
     public GameManager game;
 
     public bool CombatWait;
-    
+
+    //last combat info
+    Entity atk;
+    Entity def;
+    int rolls;
+    int currShot = 0;
+    float fireTime = 0;
+    int[] atkR;
+    int[] defR;
 
     public void Fight(GameManager g, Entity p, Entity e)
     {
@@ -29,26 +37,63 @@ public class CombatManager : MonoBehaviour{
         Array.Reverse(AtkRolls);
         Array.Reverse(DefRolls);
 
-        int hits = 0;
-        for (int i = 0; i < rolls; i++)
-        {
-            if (AtkRolls[i] > DefRolls[i])
-            {
-                e.Health--;
-            }
-        }
+        SetCombat(AtkRolls, DefRolls, p, e, rolls);
+    }
+
+    void SetCombat(int[] atk, int[] def, Entity p, Entity e, int rolls)
+    {
+        this.atkR = atk;
+        this.defR = def;
+        this.atk = p;
+        this.def = e;
+        this.rolls = rolls;
+        currShot = 0;
+        
 
         CombatWait = true;
         p.Fired = true;
     }
 
-    public void Print(int[] array)
+    void Update()
     {
-        Debug.Log("Combat Rolls:");
-        for (int i= 0; i < array.Length; i++)
+        if (CombatWait == true)
         {
-            Debug.Log(array[i]);
+            fireTime += Time.deltaTime;
+            if (fireTime > Debug_Weapon.FPS(atk.Weapon))
+            {
+                if (Hit(currShot))
+                {
+                    Debug.Log("Hit");
+                    Spawner.SpawnSmoke(def.transform.position, 0.5f);
+                    def.Health--;
+                    if (def.Name.Contains("Drone"))
+                    {
+                        game.UIManager.setEnemyUI((Enemy)def);
+                        if (game.CheckEnemies())
+                            CombatWait = false;
+                    }
+                    else
+                        game.UIManager.setHealthBar((Player)def);
+                }
+                else
+                {
+                    Debug.Log("Miss");
+                }
+
+                currShot++;
+                fireTime = 0;
+                if (currShot == atkR.Length)
+                    CombatWait = false;
+            }
         }
+    }
+
+    bool Hit(int shot)
+    {
+        if (atkR[shot] > defR[shot])
+            return true;
+
+        return false;
     }
 
 

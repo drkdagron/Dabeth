@@ -248,7 +248,7 @@ public class GameManager : MonoBehaviour {
 
     #region Enemy Attack
 
-    public void CheckEnemies()
+    public bool CheckEnemies()
     {
         for (int i = AI.Enemies.Count - 1; i > -1; i--)
         {
@@ -258,8 +258,10 @@ public class GameManager : MonoBehaviour {
                 GameObject.Destroy(AI.Enemies[i]);
                 AI.Enemies.RemoveAt(i);
                 UIManager.hideEnemyUI();
+                return true;
             }
         }
+        return false;
     }
 
     #endregion

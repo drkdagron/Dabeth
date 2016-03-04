@@ -52,7 +52,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: f43ed46c6aed7d44dbc1b655918e010d, type: 3}
   - {fileID: 21300000, guid: 1921b971fcc468345b7d1e7f8187e738, type: 3}
   CurrentSprite: 0
-  FPSTimer: 0.5
+  FPSTimer: 0.075
   Timer: 0
   OneShot: 1
 --- !u!212 &21279168
@@ -91,7 +91,11 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: FPSTimer
+      value: 0.075
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 150890}

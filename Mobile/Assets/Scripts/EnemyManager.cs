@@ -67,7 +67,7 @@ public class EnemyManager : MonoBehaviour {
 
     void Update()
     {
-        if (Playing)
+        if (Playing && !Game.combatManager.CombatWait)
         {
             Timer += Time.deltaTime;
             if (Timer > TimePerTurn)

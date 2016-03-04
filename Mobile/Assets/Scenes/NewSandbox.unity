@@ -407,9 +407,8 @@ MonoBehaviour:
   currentTurn: -1
   playerFirst: 1
   UIPlayerOnly:
-  - {fileID: 1516439115}
-  - {fileID: 787409734}
   - {fileID: 876149930}
+  - {fileID: 787409734}
   UIManager: {fileID: 907244024}
   combatManager: {fileID: 187646323}
 --- !u!4 &187646321
@@ -864,52 +863,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
---- !u!1001 &769656439
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 422982, guid: 2accdd1e428e6da4ab9f621cb1fb42da, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 6.6000004
-      objectReference: {fileID: 0}
-    - target: {fileID: 422982, guid: 2accdd1e428e6da4ab9f621cb1fb42da, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 3.09125
-      objectReference: {fileID: 0}
-    - target: {fileID: 422982, guid: 2accdd1e428e6da4ab9f621cb1fb42da, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: -0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 422982, guid: 2accdd1e428e6da4ab9f621cb1fb42da, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 422982, guid: 2accdd1e428e6da4ab9f621cb1fb42da, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 422982, guid: 2accdd1e428e6da4ab9f621cb1fb42da, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 422982, guid: 2accdd1e428e6da4ab9f621cb1fb42da, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 422982, guid: 2accdd1e428e6da4ab9f621cb1fb42da, type: 2}
-      propertyPath: m_RootOrder
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 11436436, guid: 2accdd1e428e6da4ab9f621cb1fb42da, type: 2}
-      propertyPath: OneShot
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 2accdd1e428e6da4ab9f621cb1fb42da, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1 &787409734
 GameObject:
   m_ObjectHideFlags: 0
@@ -1326,9 +1279,8 @@ MonoBehaviour:
   turnCounter: {fileID: 1820588838}
   uiPlayer: {fileID: 1516439117}
   UIPlayerOnly:
-  - {fileID: 1516439115}
-  - {fileID: 876149930}
   - {fileID: 787409734}
+  - {fileID: 876149930}
   game: {fileID: 187646320}
   enemy: {fileID: 1662392480}
   eSystem: {fileID: 0}

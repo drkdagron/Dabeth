@@ -25,7 +25,6 @@ public class Smoke : MonoBehaviour {
             CurrentSprite++;
             SpriteRender.sprite = Sprites[CurrentSprite];
             float r = (float)CurrentSprite / (float)Sprites.Length;
-            Debug.Log(r);
             Color c = new Color(255, 255, 255, 100);
             SpriteRender.color = new Color(255, 255, 255, 1 - r);
             Timer = 0;
