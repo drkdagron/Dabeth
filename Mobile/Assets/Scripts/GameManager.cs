@@ -320,6 +320,10 @@ public class GameManager : MonoBehaviour {
         SetupGame();
 	}
 
+    public void combatTest()
+    {
+        combatManager.StartCombatEvent();
+    }
 
     
 }

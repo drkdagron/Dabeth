@@ -59,17 +59,38 @@ public class Enemy : Entity {
 
     void AIPatrol()
     {
-        List<int> tiles = game.Board.selectTileRingAt(tileID, 3);
+        
         bool done = false;
         int t = 0;
+        List<int> tries = new List<int>();
+        int size = 3;
+        List<int> tiles = game.Board.selectTileRingAt(tileID, size);
         while (done == false)
         {
             t = Random.Range(0, tiles.Count);
-            if (game.Board.getTileAtID(t).GetComponent<Tile>().Occupied == false)
-                done = true;
+
+                Tile obj = game.Board.getTileAtID(t).GetComponent<Tile>();
+                if (obj.Occupied == false || obj.State != Tile.TileStates.Closed)
+                    done = true;
+
+                if (tries.Count == tiles.Count)
+                {
+                    tiles.Clear(); tries.Clear();
+                    size--;
+                    Debug.Log("Size getting smaller: " + size);
+                    if (size == 0)
+                    {
+                        t = -1;
+                        done = true;
+                    }
+                    tiles = game.Board.selectTileRingAt(tileID, size);
+                }
         }
-        game.MoveEnemy(gameObject, tiles[t]);
-        CheckState();
+        if (t != -1)
+        {
+            game.MoveEnemy(gameObject, tiles[t]);
+            CheckState();
+        }
     }
     void AIChase()
     {

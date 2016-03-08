@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour {
     public Text turnCounter;
     public UIPlayer uiPlayer;
     public GameObject[] UIPlayerOnly;
+    public GameObject UIPlayerInfo;
     public GameManager game;
 
     public UIEnemy enemy;
