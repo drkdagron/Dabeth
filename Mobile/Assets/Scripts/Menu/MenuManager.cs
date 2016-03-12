@@ -9,7 +9,8 @@ public class MenuManager : MonoBehaviour {
     {
         Login = 0,
         CharSelect = 1,
-        MainMenu = 2,
+        MainMenu = 3,
+        Inventory = 2,
     }
 
     public MenuBase[] Screens;
