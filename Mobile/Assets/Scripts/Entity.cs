@@ -57,6 +57,11 @@ public class Entity : MonoBehaviour
         tile.GetComponent<Tile>().Occupied = true;
     }
 
+    public void PutEntity()
+    {
+        this.transform.position = game.Board.getTileAtID(tileID).transform.position + new Vector3(0, 0, -0.5f);
+    }
+
     public void ResetTurn()
     {
         Move = 3;

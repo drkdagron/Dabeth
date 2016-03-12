@@ -12,4 +12,8 @@ public static class Spawner
     {
         GameObject obj = GameObject.Instantiate(Resources.Load("Assets/Prefabs/Explosion"), position, Quaternion.identity) as GameObject;
     }
+    public static void SpawnMuzzleFlash(Vector3 position)
+    {
+        GameObject obj = GameObject.Instantiate(Resources.Load("Assets/Prefabs/Muzzle"), position, Quaternion.identity) as GameObject;
+    }
 }

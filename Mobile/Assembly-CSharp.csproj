@@ -51,6 +51,7 @@
      <Compile Include="Assets\Scripts\Bullet.cs" />
      <Compile Include="Assets\Scripts\CameraControl.cs" />
      <Compile Include="Assets\Scripts\CombatManager.cs" />
+     <Compile Include="Assets\Scripts\CombatView.cs" />
      <Compile Include="Assets\Scripts\Debug_Weapon.cs" />
      <Compile Include="Assets\Scripts\Enemy.cs" />
      <Compile Include="Assets\Scripts\EnemyManager.cs" />

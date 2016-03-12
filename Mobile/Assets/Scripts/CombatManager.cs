@@ -7,6 +7,12 @@ public class CombatManager : MonoBehaviour{
     public GameManager game;
 
     public bool CombatWait;
+    public bool buffer;
+    public float bufTimer = 0f;
+    public float bufTime = 1f;
+
+    public Camera mainCam;
+    public CombatView combatView;
 
     //last combat info
     Entity atk;
@@ -17,8 +23,31 @@ public class CombatManager : MonoBehaviour{
     int[] atkR;
     int[] defR;
 
+    public void StartCombatEvent()
+    {
+        game.UIManager.hideEnemyUI();
+        game.UIManager.PlayerUI(false);
+        game.UIManager.UIPlayerInfo.SetActive(false);
+        mainCam.gameObject.SetActive(false);
+        combatView.gameObject.SetActive(true);
+    }
+
+    public void EndCombatEvent()
+    {
+        game.UIManager.PlayerUI(true);
+        game.UIManager.UIPlayerInfo.SetActive(true);
+        mainCam.gameObject.SetActive(true);
+        combatView.gameObject.SetActive(false);
+
+        atk.PutEntity();
+        def.PutEntity();
+    }
+
     public void Fight(GameManager g, Entity p, Entity e)
     {
+        StartCombatEvent();
+        p.transform.position = combatView.AttPosition.transform.position;
+        e.transform.position = combatView.DefPosition.transform.position;
         Vector3 edge = e.transform.position - p.transform.position;
         float f = Mathf.Atan2(edge.y, edge.x);
         p.transform.rotation = Quaternion.Euler(new Vector3(0, 0, Mathf.Rad2Deg * f));
@@ -49,7 +78,6 @@ public class CombatManager : MonoBehaviour{
         this.rolls = rolls;
         currShot = 0;
         
-
         CombatWait = true;
         p.Fired = true;
     }
@@ -61,6 +89,7 @@ public class CombatManager : MonoBehaviour{
             fireTime += Time.deltaTime;
             if (fireTime > Debug_Weapon.FPS(atk.Weapon))
             {
+                Spawner.SpawnMuzzleFlash(atk.weapon.Barrel.transform.position);
                 if (Hit(currShot))
                 {
                     Debug.Log("Hit");
@@ -70,7 +99,9 @@ public class CombatManager : MonoBehaviour{
                     {
                         game.UIManager.setEnemyUI((Enemy)def);
                         if (game.CheckEnemies())
-                            CombatWait = false;
+                        {
+                            buffer = true;
+                        }
                     }
                     else
                         game.UIManager.setHealthBar((Player)def);
@@ -83,7 +114,21 @@ public class CombatManager : MonoBehaviour{
                 currShot++;
                 fireTime = 0;
                 if (currShot == atkR.Length)
-                    CombatWait = false;
+                {
+                    buffer = true;
+                }
+            }
+        }
+        if (buffer)
+        {
+            CombatWait = false;
+            bufTimer += Time.deltaTime;
+            if (bufTimer > bufTime)
+            {
+                buffer = false;
+                bufTimer = 0;
+                EndCombatEvent();
+                
             }
         }
     }

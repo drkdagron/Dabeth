@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/Ste_UI.unity
+- path: Assets/Scenes/NewSandbox.unity
   isLoaded: 1
   isActive: 1
